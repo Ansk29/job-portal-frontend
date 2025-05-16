@@ -1,55 +1,19 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import AdminDashboard from "./dashboard/AdminDashboard";
+import EmployerDashboard from "./dashboard/EmployerDashboard";
+import CandidateDashboard from "./dashboard/CandidateDashboard";
 
 const Dashboard = () => {
-  const navigate = useNavigate();
-
-  // Get user data from localStorage
   const user = JSON.parse(localStorage.getItem("user"));
+  const role = user?.role;
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/login");
-  };
+  if (!role) return <div>Invalid user</div>;
 
-  if (!user) {
-    // If no user found, redirect to login (optional)
-    navigate("/login");
-    return null;
-  }
+  if (role === "admin") return <AdminDashboard />;
+  if (role === "employer") return <EmployerDashboard />;
+  if (role === "candidate") return <CandidateDashboard />;
 
-  return (
-    <div style={{ padding: "2rem" }}>
-      <h1>Welcome to the Dashboard, {user.name}!</h1>
-
-      {user.role === "candidate" && (
-        <>
-          <h2>Candidate Panel</h2>
-          <p>Apply for jobs, view your applications, update profile, etc.</p>
-          {/* Add candidate-specific components or links here */}
-        </>
-      )}
-
-      {user.role === "employer" && (
-        <>
-          <h2>Employer Panel</h2>
-          <p>Create jobs, view applications for your jobs, update jobs, etc.</p>
-          {/* Add employer-specific components or links here */}
-        </>
-      )}
-
-      {user.role === "admin" && (
-        <>
-          <h2>Admin Panel</h2>
-          <p>Manage jobs, applications, users, update profiles, etc.</p>
-          {/* Add admin-specific components or links here */}
-        </>
-      )}
-
-      <button onClick={handleLogout}>Logout</button>
-    </div>
-  );
+  return <div>Unknown role</div>;
 };
 
 export default Dashboard;
